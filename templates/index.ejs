@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal</title>
+</head>
+<body>
+    <div>
+        <h1>Welcome to Job Portal</h1>
+        <nav>
+            <ul>
+                <li><a href="/vacancies">Vacancies</a></li>
+                <li><a href="/categories">Categories</a></li>
+                <li><a href="/companies">Companies</a></li>
+                <li><a href="/information">Information</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div>
+        <h1>Vacancy Statistics</h1>
+
+        <!-- Форма фильтрации -->
+        <form method="GET" action="/">
+            <label for="category">Выберите категорию:</label>
+            <select name="categoryId" id="category">
+                <option value="">Все категории</option>
+                <% categories.forEach(category => { %>
+                    <option value="<%= category._id %>" <%= selectedCategory === category._id ? 'selected' : '' %>><%= category.name %></option>
+                <% }) %>
+            </select>
+
+            <label for="company">Выберите компанию:</label>
+            <select name="companyId" id="company">
+                <option value="">Все компании</option>
+                <% companies.forEach(company => { %>
+                    <option value="<%= company._id %>" <%= selectedCompany === company._id ? 'selected' : '' %>><%= company.name %></option>
+                <% }) %>
+            </select>
+
+            <button type="submit">Фильтровать</button>
+        </form>
+
+        <!-- Вывод существующих вакансий -->
+        <h2>Существующие Вакансии</h2>
+        <ul>
+            <% vacancies.forEach(vacancy => { %>
+                <li><strong><%= vacancy.title %></strong> - Категория: <%= vacancy.category ? vacancy.category.name : 'Не указана' %>, Компания: <%= vacancy.company ? vacancy.company.name : 'Не указана' %></li>
+            <% }) %>
+        </ul>
+
+</body>
+</html>

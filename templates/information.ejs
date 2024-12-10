@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information</title>
+</head>
+<body>
+    <h1>Информация о сервере</h1>
+
+    <h2>Данные из текстового файла:</h2>
+    <pre><%= fileData %></pre>
+
+    <h2>Информация о сервере:</h2>
+    <ul>
+        <li><strong>Имя хоста:</strong> <%= serverInfo.hostname %></li>
+        <li><strong>Платформа:</strong> <%= serverInfo.platform %></li>
+        <li><strong>Архитектура:</strong> <%= serverInfo.architecture %></li>
+        <li><strong>Количество CPU:</strong> <%= serverInfo.cpuCount %></li>
+        <li><strong>Свободная память:</strong> <%= serverInfo.freeMemory / (1024 * 1024) %> MB</li>
+        <li><strong>Общая память:</strong> <%= serverInfo.totalMemory / (1024 * 1024) %> MB</li>
+    </ul>
+
+    <a href="/">Назад на главную</a>
+</body>
+</html>

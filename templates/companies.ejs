@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies</title>
+</head>
+<body>
+    <h1>Companies</h1>
+    <a href="/companies/add">Add New Company</a>
+    <ul>
+        <%companies.forEach( company => { %>
+        <li>
+            <%= company.name %>
+            <a href="/companies/edit/<%= company._id %>">Edit</a>
+            <a href="/companies/delete/<%= company._id %>" onclick="return confirm('Are you sure?');">Delete</a>
+        </li>
+        <% }) %>
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

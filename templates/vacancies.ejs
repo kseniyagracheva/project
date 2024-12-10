@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancies</title>
+</head>
+<body>
+    <h1>Vacancies</h1>
+    <a href="/vacancies/add">Add New Vacancy</a>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+        <% vacancies.forEach(vacancy => { %> <!-- Открывающий тег цикла -->
+        <tr>
+            <td><%= vacancy.title %></td> <!-- Вставка значения -->
+            <td><%= vacancy.company.name %></td> <!-- Вставка значения -->
+            <td><%= vacancy.category.name %></td> <!-- Вставка значения -->
+            <td>
+                <a href="/vacancies/edit/<%= vacancy._id %>">Edit</a>
+                <a href="/vacancies/delete/<%= vacancy._id %>" onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+        </tr>
+        <% }) %> <!-- Закрывающий тег цикла -->
+    </table>
+    <a href="/">Back to Home</a>
+</body>
+</html>
