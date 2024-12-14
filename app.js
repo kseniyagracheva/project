@@ -1,30 +1,31 @@
 // Подключение необходимых библиотек
-import express from 'express';
-import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import os from 'os';
+import express from 'express'; //фрейм-ворк для создания веб сервреров
+import mongoose from 'mongoose';//работа с MOngoDB
+import bodyParser from 'body-parser';//парсер тела http запросов
+import path from 'path';//модуль для работы с путями файлов
+import { fileURLToPath } from 'url';//модуль для преобразования URL в пути файловой системы
+import Vacancy from './models/Vacancies.js';
+import Company from './models/Companies.js';
+import Category from './models/Categories.js';
+import { getInformation } from './handlers/informationHandler.js';
+
 
 // Создание приложения Express
-const app = express();
+const app = express(); //создание экземпляра приложение Express
 const port = 3000;
-app.use(bodyParser.json());
+app.use(bodyParser.json());//мидлвейр для парсинга JSON в теле запросов    
 app.use(express.json()); // Для обработки JSON-данных
 app.use(express.urlencoded({ extended: true })); // Для обработки URL-кодированных данных
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename); //получение пути к файлам
+
 // Настройка EJS как шаблонизатора
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'ejs');//рендерим шаблоны с помощью ejs 
+app.set('views', path.join(__dirname, 'templates'));//указываем директорию с шаблонами
 
 // Подключение к MongoDB (реплика-сет)
-mongoose.connect('mongodb://localhost:27017/job_portal?replicaSet=rs0&directConnection=true', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://localhost:27017/job_portal?replicaSet=rs0&directConnection=true')
 .then(() => {
     console.log('Подключение к MongoDB успешно!');
 })
@@ -32,25 +33,8 @@ mongoose.connect('mongodb://localhost:27017/job_portal?replicaSet=rs0&directConn
     console.error('Ошибка подключения к MongoDB:', err);
 });
 
-// Определение схемы и модели для вакансий, компаний и категорий
-const vacancySchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    company_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-    category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
-});
-const categorySchema = new mongoose.Schema({
-    name: String,
-});
-const companySchema = new mongoose.Schema({
-    name: String,
-});
-
-const Vacancy = mongoose.model('Vacancy', vacancySchema);
-const Category = mongoose.model('Category', categorySchema);
-const Company = mongoose.model('Company', companySchema);
-
 // Главная страница
-app.get('/', async (req, res) => {
+app.get('/', async (req, res) => { //обработчик get-запроса к корневому url
     try {
         const { categoryId, companyId } = req.query; // Получаем параметры фильтрации из запроса
         // Начинаем агрегатный запрос
@@ -169,10 +153,7 @@ app.route('/vacancies/edit/:id')
         res.render('edit_vacancy', { vacancy, companies, categories });
     })
     .post(async (req, res) => {
-        try {
-            const oldCategoryId = Vacancy.category_id;
-            const oldCompanyId = Vacancy.company_id;
-    
+        try {    
             const updatedVacancy = {
                 title: req.body.title,
                 company_id: req.body.company_id,
@@ -318,30 +299,8 @@ app.get('/companies/delete/:id', async (req, res) => {
     }
 });
 
-app.get('/information', async (req, res) => {
-    try {
-        // Чтение файла с информацией
-        const filePath = path.join('info.txt'); 
-        const fileData = await fs.promises.readFile(filePath, 'utf8');
-        // Получаем информацию о сервере
-        const serverInfo = {
-            hostname: os.hostname(),
-            platform: os.platform(),
-            architecture: os.arch(),
-            cpuCount: os.cpus().length,
-            freeMemory: os.freemem(),
-            totalMemory: os.totalmem(),
-        };
+app.get('/information', getInformation);
 
-        res.render('information', {
-            fileData,
-            serverInfo,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Ошибка при получении информации');
-    }
-});
 
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
